@@ -1,0 +1,23 @@
+---
+### Install
+cockroachdb_group: cockroach
+cockroachdb_group_uid: 6106
+cockroachdb_user: cockroach
+cockroachdb_user_uid: 10013
+cockroachdb_user_home: /opt/cockroachdb
+
+cockroachdb_bin_dir: "/usr/bin"
+cockroachdb_lib_dir: "/usr/local/lib/cockroach"
+cockroachdb_data_dir: "/data/cockdata"
+cockroachdb_backups_dir: "/data/backups/cockroach"
+cockroachdb_logs_dir: "/var/log/cockroach"
+
+### Binary
+cockroachdb_tmp_dir: "/tmp/cockroach"
+cockroachdb_version: "22.2.6"
+cockroachdb_tgz: "cockroach-v{{ cockroachdb_version }}.linux-amd64.tgz"
+cockroachdb_tgz_url: "https://binaries.cockroachdb.com/{{ cockroachdb_tgz }}"
+
+### Config
+cockroachdb_certs_dir: "{{ cockroachdb_user_home }}/certs"
+cockroachdb_cluster_group: ""

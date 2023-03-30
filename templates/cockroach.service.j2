@@ -1,0 +1,16 @@
+[Unit]
+Description=Cockroach Database cluster node
+Requires=network.target
+[Service]
+Type=notify
+WorkingDirectory={{ cockroachdb_user_home }}
+ExecStart={{ cockroachdb_bin_dir }}/cockroach start --store={{ cockroachdb_data_dir }}/node1 --certs-dir={{ cockroachdb_user_home }}/certs --log-config-file={{ cockroachdb_user_home }}/logs.yaml --advertise-addr={{ inventory_hostname }}:26257 --join={% for node in cockroachdb_nodes_list %}{{ node }}{% if not loop.last %},{% endif %}{% endfor %} --cache=.25 --max-sql-memory=.25
+TimeoutStopSec=300
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cockroach
+User={{ cockroachdb_user }}
+[Install]
+WantedBy=default.target

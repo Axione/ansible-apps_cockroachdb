@@ -1,0 +1,7 @@
+---
+- name: restart cockroach
+  ansible.builtin.service:
+    name: cockroach
+    state: restarted
+  when:
+    - cockroachdb_nodes_list is defined

@@ -1,0 +1,32 @@
+---
+- name: "Create certs directory"
+  ansible.builtin.file:
+    path: "{{ cockroachdb_certs_dir }}"
+    owner: "{{ cockroachdb_user }}"
+    group: "{{ cockroachdb_group }}"
+    mode: 0740
+    state: directory
+
+- name: "Create certs ca."
+  ansible.builtin.command: "{{ cockroachdb_bin_dir }}/cockroach cert create-ca --certs-dir={{ cockroachdb_certs_dir }} --ca-key={{ cockroachdb_certs_dir }}/ca.key"
+  changed_when: true
+
+- name: "Create cert node."
+  ansible.builtin.command: "{{ cockroachdb_bin_dir }}/cockroach cert create-node {% for node in cockroachdb_nodes_list %}{{ node }} {% endfor %}--certs-dir={{ cockroachdb_certs_dir }} --ca-key={{ cockroachdb_certs_dir }}/ca.key"
+  changed_when: true
+
+- name: "Create cert client."
+  ansible.builtin.command: "{{ cockroachdb_bin_dir }}/cockroach cert create-client root --certs-dir={{ cockroachdb_certs_dir }} --ca-key={{ cockroachdb_certs_dir }}/ca.key"
+  changed_when: true
+
+- name: "Create cert client 2."
+  ansible.builtin.command: "{{ cockroachdb_bin_dir }}/cockroach cert create-client {{ cockroachdb_user }} --certs-dir={{ cockroachdb_certs_dir }} --ca-key={{ cockroachdb_certs_dir }}/ca.key"
+  changed_when: true
+
+- name: "Change certs permissions"
+  ansible.builtin.file:
+    path: "{{ cockroachdb_certs_dir }}"
+    owner: "{{ cockroachdb_user }}"
+    group: "{{ cockroachdb_group }}"
+    recurse: true
+    mode: 0700
