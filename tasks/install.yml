@@ -129,18 +129,10 @@
     dest: '{{ cockroachdb_certs_dir }}'
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
-    mode: '0640'
+    mode: '0700'
   when:
     - cockroachdb_nodes_list is defined
     - inventory_hostname in cockroachdb_nodes_list | difference(cockroachdb_nodes_list[0])
-
-- name: "Change certs permissions"
-  ansible.builtin.file:
-    path: "{{ cockroachdb_certs_dir }}"
-    owner: "{{ cockroachdb_user }}"
-    group: "{{ cockroachdb_group }}"
-    recurse: true
-    mode: 0700
 
 ### Logs
 - name: "Create log file"
@@ -178,6 +170,7 @@
   args:
     executable: /usr/bin/bash
   changed_when: false
+  failed_when: false
   register: init
   when:
     - cockroachdb_nodes_list is defined
@@ -186,8 +179,8 @@
 - name: "Init cluster"
   ansible.builtin.command: "{{ cockroachdb_bin_dir }}/cockroach init --certs-dir={{ cockroachdb_certs_dir }} --host={{ inventory_hostname }}"
   changed_when: true
-  become_user: "{{ cockroachdb_user }}"
+  #become_user: "{{ cockroachdb_user }}"
   when:
     - cockroachdb_nodes_list is defined
     - inventory_hostname == cockroachdb_nodes_list[0]
-    - init.stdout == 0
+    - init.stdout == "0"
