@@ -1,5 +1,5 @@
 ---
-- name: restart cockroach
+- name: Restart cockroach
   ansible.builtin.service:
     name: cockroach
     state: restarted

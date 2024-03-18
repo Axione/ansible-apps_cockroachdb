@@ -12,7 +12,7 @@
     name: ['glibc', 'ncurses-libs', 'tzdata', 'tar']
     state: present
 
-- name: "create cockroachdb group"
+- name: "Create cockroachdb group"
   ansible.builtin.group:
     name: "{{ cockroachdb_group }}"
     gid: "{{ cockroachdb_group_gid | default(omit) }}"
@@ -99,13 +99,13 @@
     - inventory_hostname == cockroachdb_nodes_list[0]
 
 - name: "Create certs on primary node"
-  include_tasks: mk_certs.yml
+  ansible.builtin.include_tasks: mk_certs.yml
   when:
     - cockroachdb_nodes_list is defined
     - inventory_hostname == cockroachdb_nodes_list[0]
     - not cockroach_certs.stat.exists
 
-- name: use find to get the files list which you want to copy/fetch
+- name: Use find to get the files list which you want to copy/fetch
   ansible.builtin.find:
     paths: "{{ cockroachdb_certs_dir }}"
   register: file_2_fetch
@@ -113,7 +113,7 @@
     - cockroachdb_nodes_list is defined
     - inventory_hostname == cockroachdb_nodes_list[0]
 
-- name: use fetch to get the files
+- name: Use fetch to get the files
   ansible.builtin.fetch:
     src: "{{ item.path }}"
     dest: /tmp/cockroach-certs/
@@ -142,7 +142,7 @@
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
     mode: '0640'
-  notify: "restart cockroach"
+  notify: "Restart cockroach"
 
 ### systemd
 - name: "Create systemd"
@@ -150,7 +150,7 @@
     src: 'cockroach.service.j2'
     dest: '/etc/systemd/system/cockroach.service'
     mode: '0640'
-  notify: "restart cockroach"
+  notify: "Restart cockroach"
   when:
     - cockroachdb_nodes_list is defined
 
@@ -165,7 +165,7 @@
 
 ### Init cluster
 
-- name: "Checl cluster init"
+- name: "Check cluster init"
   ansible.builtin.shell: set -o pipefail && systemctl status cockroach | grep clusterID | wc -l
   args:
     executable: /usr/bin/bash
