@@ -12,11 +12,6 @@ variables:
 ######################################################
 # RUN MOLECULE FOR EACH DISTRIB
 ######################################################
-molecule_rocky8:
-  stage: molecule
-  image: lotusnoir/molecule_play
-  script:
-    - MOLECULE_DISTRIB=rocky8 molecule test
 molecule_oraclelinux8:
   stage: molecule
   image: lotusnoir/molecule_play
@@ -27,6 +22,11 @@ molecule_oraclelinux9:
   image: lotusnoir/molecule_play
   script:
     - MOLECULE_DISTRIB=oraclelinux9 molecule test
+molecule_rocky8:
+  stage: molecule
+  image: lotusnoir/molecule_play
+  script:
+    - MOLECULE_DISTRIB=rocky8 molecule test
 
 ######################################################
 # GENERATE CHANGELOG FILE
@@ -35,9 +35,9 @@ changelog:
   stage: changes
   image: node:19
   needs:
-    - molecule_rocky8
     - molecule_oraclelinux8
     - molecule_oraclelinux9
+    - molecule_rocky8
   artifacts:
     paths:
       - CHANGELOG.md
