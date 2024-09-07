@@ -11,14 +11,21 @@ scenario:
     - prepare
     - converge
     - idempotence
-    #- verify
+    # - verify
     - destroy
 platforms:
   - name: apps-cockroachdb-rocky8
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:rocky8
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
-    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    groups:
+      - python3
+  - name: apps-cockroachdb-rocky9
+    pre_build_image: true
+    image: lotusnoir/ansible_molecule_test_images:rocky9
+    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     groups:
@@ -27,7 +34,6 @@ platforms:
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:oraclelinux8
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
-    privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     groups:
@@ -36,7 +42,6 @@ platforms:
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:oraclelinux9
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
-    privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     groups:
@@ -44,6 +49,8 @@ platforms:
 
 provisioner:
   name: ansible
+  connection_options:
+    ansible_remote_tmp: /tmp
   playbooks:
     prepare: prepare.yml
     converge: playbook.yml

@@ -14,19 +14,34 @@ variables:
 ######################################################
 molecule_oraclelinux8:
   stage: molecule
-  image: lotusnoir/molecule_play
+  image: lotusnoir/molecule_play:v2.0.0
   script:
     - MOLECULE_DISTRIB=oraclelinux8 molecule test
 molecule_oraclelinux9:
   stage: molecule
-  image: lotusnoir/molecule_play
+  image: lotusnoir/molecule_play:latest
   script:
     - MOLECULE_DISTRIB=oraclelinux9 molecule test
+molecule_redhat8:
+  stage: molecule
+  image: lotusnoir/molecule_play:v2.0.0
+  script:
+    - MOLECULE_DISTRIB=redhat8 molecule test
+molecule_redhat9:
+  stage: molecule
+  image: lotusnoir/molecule_play:latest
+  script:
+    - MOLECULE_DISTRIB=redhat9 molecule test
 molecule_rocky8:
   stage: molecule
-  image: lotusnoir/molecule_play
+  image: lotusnoir/molecule_play:v2.0.0
   script:
     - MOLECULE_DISTRIB=rocky8 molecule test
+molecule_rocky9:
+  stage: molecule
+  image: lotusnoir/molecule_play:latest
+  script:
+    - MOLECULE_DISTRIB=rocky9 molecule test
 
 ######################################################
 # GENERATE CHANGELOG FILE
@@ -37,7 +52,10 @@ changelog:
   needs:
     - molecule_oraclelinux8
     - molecule_oraclelinux9
+    - molecule_redhat8
+    - molecule_redhat9
     - molecule_rocky8
+    - molecule_rocky9
   artifacts:
     paths:
       - CHANGELOG.md

@@ -33,7 +33,7 @@
     path: "{{ item }}"
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
-    mode: 0755
+    mode: '0755'
     state: directory
   with_items:
     - "{{ cockroachdb_bin_dir }}"
@@ -57,7 +57,7 @@
         url: "{{ cockroachdb_tgz_url }}"
         dest: "{{ cockroachdb_tmp_dir }}/{{ cockroachdb_tgz }}"
         timeout: 120
-        mode: 0644
+        mode: '0644'
 
     - name: "Unarchive..."
       ansible.builtin.unarchive:
@@ -65,7 +65,7 @@
         dest: '{{ cockroachdb_tmp_dir }}'
         extra_opts: [--strip-components=1]
         remote_src: true
-        mode: 0644
+        mode: '0644'
 
     - name: "Copy binary..."
       ansible.builtin.copy:
@@ -83,7 +83,7 @@
         owner: "{{ cockroachdb_user }}"
         group: "{{ cockroachdb_group }}"
         remote_src: true
-        mode: 0644
+        mode: '0644'
       with_items:
         - libgeos.so
         - libgeos_c.so

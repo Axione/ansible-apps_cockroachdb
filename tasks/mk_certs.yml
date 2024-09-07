@@ -4,7 +4,7 @@
     path: "{{ cockroachdb_certs_dir }}"
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
-    mode: 0740
+    mode: '0740'
     state: directory
 
 - name: "Create certs ca."
@@ -29,4 +29,4 @@
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
     recurse: true
-    mode: 0700
+    mode: '0700'
