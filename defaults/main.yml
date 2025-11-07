@@ -1,7 +1,7 @@
 ---
 ### Install
 cockroachdb_group: cockroach
-#cockroachdb_group_uid: 6106
+# cockroachdb_group_uid: 6106
 cockroachdb_user: cockroach
 cockroachdb_user_uid: 10013
 cockroachdb_user_home: /opt/cockroachdb

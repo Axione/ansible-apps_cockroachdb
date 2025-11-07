@@ -9,7 +9,7 @@
 ### Binary
 - name: "Install requierement."
   ansible.builtin.package:
-    name: ['glibc', 'ncurses-libs', 'tzdata', 'tar']
+    name: "{{ cockroachdb_pkgs }}"
     state: present
 
 - name: "Create cockroachdb group"
@@ -33,7 +33,7 @@
     path: "{{ item }}"
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
-    mode: '0755'
+    mode: "0755"
     state: directory
   with_items:
     - "{{ cockroachdb_bin_dir }}"
@@ -45,7 +45,7 @@
 
 - name: "Check if binary exists"
   ansible.builtin.stat:
-    path: '{{ cockroachdb_bin_dir }}/cockroach'
+    path: "{{ cockroachdb_bin_dir }}/cockroach"
   changed_when: false
   register: cockroach_bin
 
@@ -57,33 +57,33 @@
         url: "{{ cockroachdb_tgz_url }}"
         dest: "{{ cockroachdb_tmp_dir }}/{{ cockroachdb_tgz }}"
         timeout: 120
-        mode: '0644'
+        mode: "0644"
 
     - name: "Unarchive..."
       ansible.builtin.unarchive:
-        src: '{{ cockroachdb_tmp_dir }}/{{ cockroachdb_tgz }}'
-        dest: '{{ cockroachdb_tmp_dir }}'
+        src: "{{ cockroachdb_tmp_dir }}/{{ cockroachdb_tgz }}"
+        dest: "{{ cockroachdb_tmp_dir }}"
         extra_opts: [--strip-components=1]
         remote_src: true
-        mode: '0644'
+        mode: "0644"
 
     - name: "Copy binary..."
       ansible.builtin.copy:
-        src: '{{ cockroachdb_tmp_dir }}/cockroach'
-        dest: '{{ cockroachdb_bin_dir }}'
+        src: "{{ cockroachdb_tmp_dir }}/cockroach"
+        dest: "{{ cockroachdb_bin_dir }}"
         owner: "{{ cockroachdb_user }}"
         group: "{{ cockroachdb_group }}"
         remote_src: true
-        mode: '0755'
+        mode: "0755"
 
     - name: "Copy lib..."
       ansible.builtin.copy:
-        src: '{{ cockroachdb_tmp_dir }}/lib/{{ item }}'
-        dest: '{{ cockroachdb_lib_dir }}'
+        src: "{{ cockroachdb_tmp_dir }}/lib/{{ item }}"
+        dest: "{{ cockroachdb_lib_dir }}"
         owner: "{{ cockroachdb_user }}"
         group: "{{ cockroachdb_group }}"
         remote_src: true
-        mode: '0644'
+        mode: "0644"
       with_items:
         - libgeos.so
         - libgeos_c.so
@@ -91,7 +91,7 @@
 ### Certs
 - name: "Check if certs exists"
   ansible.builtin.stat:
-    path: '{{ cockroachdb_certs_dir }}/ca.key'
+    path: "{{ cockroachdb_certs_dir }}/ca.key"
   changed_when: false
   register: cockroach_certs
   when:
@@ -125,11 +125,11 @@
 
 - name: "Copy certs to others nodes..."
   ansible.builtin.copy:
-    src: '/tmp/cockroach-certs/'
-    dest: '{{ cockroachdb_certs_dir }}'
+    src: "/tmp/cockroach-certs/"
+    dest: "{{ cockroachdb_certs_dir }}"
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
-    mode: '0700'
+    mode: "0700"
   when:
     - cockroachdb_nodes_list is defined
     - inventory_hostname in cockroachdb_nodes_list | difference(cockroachdb_nodes_list[0])
@@ -137,19 +137,19 @@
 ### Logs
 - name: "Create log file"
   ansible.builtin.template:
-    src: 'logs.yml.j2'
-    dest: '{{ cockroachdb_user_home }}/logs.yaml'
+    src: "logs.yml.j2"
+    dest: "{{ cockroachdb_user_home }}/logs.yaml"
     owner: "{{ cockroachdb_user }}"
     group: "{{ cockroachdb_group }}"
-    mode: '0640'
+    mode: "0640"
   notify: "Restart cockroach"
 
 ### systemd
 - name: "Create systemd"
   ansible.builtin.template:
-    src: 'cockroach.service.j2'
-    dest: '/etc/systemd/system/cockroach.service'
-    mode: '0640'
+    src: "cockroach.service.j2"
+    dest: "/etc/systemd/system/cockroach.service"
+    mode: "0640"
   notify: "Restart cockroach"
   when:
     - cockroachdb_nodes_list is defined
@@ -179,7 +179,7 @@
 - name: "Init cluster"
   ansible.builtin.command: "{{ cockroachdb_bin_dir }}/cockroach init --certs-dir={{ cockroachdb_certs_dir }} --host={{ inventory_hostname }}"
   changed_when: true
-  #become_user: "{{ cockroachdb_user }}"
+  # become_user: "{{ cockroachdb_user }}"
   when:
     - cockroachdb_nodes_list is defined
     - inventory_hostname == cockroachdb_nodes_list[0]

@@ -1,0 +1,3 @@
+---
+### Requirement packages
+cockroachdb_pkgs: ["glibc", "ncurses-libs", "tzdata", "tar"]

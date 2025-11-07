@@ -1,0 +1,2 @@
+---
+cockroachdb_pkgs: ["libc6", "libncurses6", "tzdata", "tar"]
